@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <title>Blockmine</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ======== SPLASH / STARTANIMATION ======== -->
+  <div id="splash">
+    <div class="splash-hairline"></div>
+    <div class="splash-inner">
+      <div class="splash-glyph">
+        <svg viewBox="0 0 120 120" width="96" height="96">
+          <rect class="b1" x="34" y="34" width="30" height="30" fill="#ffffff"/>
+          <rect class="b2" x="64" y="34" width="22" height="30" fill="#3a3a3a"/>
+          <rect class="b3" x="34" y="64" width="22" height="22" fill="#555555"/>
+          <rect class="b4" x="56" y="64" width="30" height="22" fill="#000000" stroke="#ffffff" stroke-width="1.5"/>
+          <g class="pk">
+            <line x1="61" y1="26" x2="61" y2="120" stroke="#ededed" stroke-width="6" stroke-linecap="round"/>
+            <path d="M61 26 L61 6 L84 22 Z" fill="#ffffff"/>
+          </g>
+        </svg>
+      </div>
+      <div class="splash-title">BLOCKMINE</div>
+      <div class="splash-sub">SECURE MINING &mdash; POWER LIMIT ONLY</div>
+      <div class="splash-bar"><div class="splash-progress"></div></div>
+      <div class="splash-status" id="splash-status">INIT&nbsp;&middot;&nbsp;GPU&nbsp;TELEMETRIE</div>
+    </div>
+  </div>
+
+  <!-- ======== APP ======== -->
+  <div id="app" class="hidden">
+
+    <aside class="sidebar">
+      <div class="side-brand">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <rect x="5" y="5" width="15" height="15" fill="#fff"/>
+          <rect x="22" y="5" width="13" height="15" fill="#3a3a3a"/>
+          <rect x="5" y="22" width="13" height="13" fill="#555"/>
+          <rect x="18" y="22" width="17" height="13" fill="#000" stroke="#fff" stroke-width="1.2"/>
+        </svg>
+        <span class="brand-txt">BLOCKMINE</span>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-btn active" data-view="dashboard" id="navDashboard">
+          <span class="nav-idx">01</span> <span data-i18n="nav.dashboard">DASHBOARD</span>
+        </button>
+        <button class="nav-btn" data-view="mining" id="navMining">
+          <span class="nav-idx">02</span> <span data-i18n="nav.mining">MINING</span>
+        </button>
+        <button class="nav-btn" data-view="geld" id="navGeld">
+          <span class="nav-idx">03</span> <span data-i18n="nav.geld">GELD</span>
+        </button>
+      </nav>
+
+      <div class="side-spacer"></div>
+
+      <div class="side-gpu">
+        <div class="side-gpu-label" data-i18n="nav.gpu">GPU</div>
+        <div class="side-gpu-name" id="sideGpuName">&mdash;</div>
+        <div class="side-gpu-switch" id="gpuSwitch"></div>
+        <div class="side-stats">
+          <div class="ss"><span class="ss-l" data-i18n="side.load">AUSLAST</span><b id="sideUtil">--</b><span class="ss-u">%</span></div>
+          <div class="ss"><span class="ss-l" data-i18n="side.temp">TEMP</span><b id="sideTemp">--</b><span class="ss-u">&deg;C</span></div>
+          <div class="ss"><span class="ss-l" data-i18n="side.watt">WATT</span><b id="sidePower">--</b><span class="ss-u">W</span></div>
+        </div>
+      </div>
+
+      <div class="side-safe"><span class="safe-k">&#10005;</span> <span data-i18n="side.noot">KEIN &Uuml;BERTAKTEN</span></div>
+
+      <div class="side-foot">
+        <button class="set-btn" id="btnSettings" title="Einstellungen">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        </button>
+        <span>v3.0</span><span id="sideGpuCount">--</span> <span data-i18n="side.gpus">GPU(S)</span>
+        <button class="help-btn" id="btnHelp" title="Tutorial anzeigen">?</button>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <div class="v3-commandbar">
+        <div class="command-brand">
+          <span class="command-kicker">BLOCKMINE / OPERATIONS</span>
+          <b data-i18n="v3.commandTitle">CONTROL CENTER</b>
+          <span class="command-sub" data-i18n="v3.commandSub">Sicher minen. Klar entscheiden.</span>
+        </div>
+        <div class="command-status">
+          <span class="status-orb" id="v3StatusOrb"></span>
+          <div><b id="v3Status" data-i18n="v3.ready">SYSTEM READY</b><small id="v3StatusDetail" data-i18n="v3.waiting">Warte auf GPU-Telemetrie</small></div>
+        </div>
+        <div class="command-actions">
+          <button class="quick-action" id="v3QuickMine" data-view="mining"><span>↗</span><small data-i18n="v3.quickMine">MINING ÖFFNEN</small></button>
+          <button class="quick-action" id="v3QuickPower"><span>◒</span><small data-i18n="v3.quickPower">BALANCED POWER</small></button>
+        </div>
+      </div>
+
+      <div class="v3-kpis" aria-label="Live system overview">
+        <div class="v3-kpi"><span class="kpi-label" data-i18n="v3.kpiTemp">TEMPERATURE</span><b id="v3KpiTemp">--</b><small>°C <i id="v3KpiTempState">—</i></small></div>
+        <div class="v3-kpi"><span class="kpi-label" data-i18n="v3.kpiPower">POWER DRAW</span><b id="v3KpiPower">--</b><small>W <i id="v3KpiPowerState">—</i></small></div>
+        <div class="v3-kpi"><span class="kpi-label" data-i18n="v3.kpiHash">HASHRATE</span><b id="v3KpiHash">0.00</b><small id="v3KpiHashUnit">H/s <i id="v3KpiHashState">IDLE</i></small></div>
+        <div class="v3-kpi"><span class="kpi-label" data-i18n="v3.kpiEfficiency">EFFICIENCY</span><b id="v3KpiEfficiency">--</b><small id="v3KpiEfficiencyUnit">H/W <i data-i18n="v3.live">LIVE</i></small></div>
+      </div>
+
+      <!-- ======== DASHBOARD ======== -->
+      <section id="view-dashboard" class="view">
+        <header class="view-head">
+          <div>
+            <h1>DASHBOARD</h1>
+            <p class="sub" id="headSub" data-i18n="dash.sub">GPU-TELEMETRIE LIVE</p>
+          </div>
+          <div class="status-pill" id="statePill"><span class="dot"></span> <span id="stateText" data-i18n="dash.standby">STANDBY</span></div>
+        </header>
+
+        <div class="hero-grid">
+          <!-- GPU hero -->
+          <div class="card hero-card" id="gpuCard">
+            <div class="card-head"><span>01</span> <span data-i18n="nav.gpu">GPU</span></div>
+            <div class="hero-top">
+              <div class="gauge" id="tempGauge">
+                <svg viewBox="0 0 120 120" width="128" height="128">
+                  <circle class="g-bg" cx="60" cy="60" r="52"/>
+                  <circle class="g-fg" id="gTemp" cx="60" cy="60" r="52"/>
+                </svg>
+                <div class="gauge-center"><b id="gTempVal">--</b><small>&deg;C</small></div>
+              </div>
+              <div class="hero-info">
+                <div class="gpu-name" id="gpuName">&mdash;</div>
+                <div class="gpu-meta" id="gpuMeta" data-i18n="dash.driver">DRIVER --</div>
+                <div class="pstate">PSTATE <b id="pstate">--</b></div>
+              </div>
+            </div>
+
+            <div class="metric-row">
+              <div class="metric">
+                <div class="m-label"><span data-i18n="mt.leistung">LEISTUNG JETZT</span></div>
+                <div class="m-value" id="mPower">--<span> W</span></div>
+                <div class="bar"><div class="bar-fill" id="powerBar" style="width:0%"></div></div>
+              </div>
+              <div class="metric">
+                <div class="m-label"><span data-i18n="mt.gpulast">GPU-LAST</span></div>
+                <div class="m-value" id="mUtil">--<span> %</span></div>
+                <div class="bar"><div class="bar-fill" id="utilBar" style="width:0%"></div></div>
+              </div>
+              <div class="metric">
+                <div class="m-label"><span data-i18n="mt.luefter">L&Uuml;FTER</span></div>
+                <div class="m-value" id="mFan">--<span> %</span></div>
+                <div class="bar"><div class="bar-fill" id="fanBar" style="width:0%"></div></div>
+              </div>
+              <div class="metric">
+                <div class="m-label">VRAM</div>
+                <div class="m-value" id="mMem">--<span> GB</span></div>
+                <div class="bar"><div class="bar-fill" id="memBar" style="width:0%"></div></div>
+              </div>
+            </div>
+
+            <div class="clock-row">
+              <span class="m-label" data-i18n="mt.clocks">CLOCKS <em>INFO</em></span>
+              <div class="clocks"><div>CORE <b id="clkCore">--</b> MHZ</div><div>MEM <b id="clkMem">--</b> MHZ</div></div>
+            </div>
+          </div>
+
+          <!-- Power limit card -->
+          <div class="card power-card" id="powerCard">
+            <div class="card-head"><span>02</span> <span data-i18n="pl.title">LEISTUNGSLIMIT</span> <em class="safe-tag" data-i18n="pl.safe">SAFE &mdash; NICHT &Uuml;BERTAKTEN</em></div>
+            <div class="power-big"><span id="plValue">--</span> <small>W</small></div>
+            <div class="range-labels"><span id="plMin">--</span><span id="plMax">--</span></div>
+            <input type="range" id="plSlider" min="0" max="1000" step="1" disabled />
+            <div class="presets">
+              <button class="preset" data-frac="0.6" data-i18n="pl.eco">ECO</button>
+              <button class="preset" data-frac="0.8" data-i18n="pl.balanced">BALANCED</button>
+              <button class="preset" data-frac="1.0" data-i18n="pl.stock">STOCK</button>
+              <button class="preset" data-frac="1.0" data-maxall data-i18n="pl.max">MAX</button>
+            </div>
+            <div class="power-actions">
+              <button class="btn-primary" id="btnApply" data-i18n="pl.apply">ANWENDEN</button>
+              <button class="btn-ghost" id="btnReset" data-i18n="pl.reset">STANDARD</button>
+            </div>
+            <div class="admin-banner hidden" id="adminBanner">
+              <div class="adm-txt" data-i18n="pl.admin">Leistungslimit braucht <b>Administrator-Rechte</b>. Einmal als Admin neu starten &mdash; dann funktioniert der Regler sofort.</div>
+              <button class="btn-primary adm-btn" id="btnElevate" data-i18n="pl.elevate">ALS ADMIN NEU STARTEN</button>
+            </div>
+            <div class="power-note">
+              <span data-i18n="pl.note1">Blockmine setzt <b>nur ein Leistungslimit</b> (Watt), so wie es deine GPU offiziell erlaubt.</span>
+              <span data-i18n="pl.note2">Es wird <b>nie</b> &uuml;bertaktet &mdash; keine Clocks, keine Spannung. Sicher.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== RECOMMENDATIONS ======== -->
+      <section class="card rec-card dashboard-addon" id="recCard">
+        <div class="card-head"><span>03</span> <span data-i18n="rec.title">EMPFEHLUNGEN</span> <em class="safe-tag" data-i18n="rec.smart">SMART MODE</em></div>
+        <div class="rec-chips" id="recChips"></div>
+        <div class="rec-list" id="recList"></div>
+      </section>
+
+      <section class="card fleet-card dashboard-addon" id="fleetCard">
+        <div class="card-head"><span>04</span> <span data-i18n="v3.fleetTitle">GPU FLEET</span><em class="safe-tag" data-i18n="v3.fleetLive">LIVE TELEMETRIE</em><button class="console-clear" id="btnRefreshFleet" data-i18n="v3.refresh">AKTUALISIEREN</button></div>
+        <div class="fleet-grid" id="gpuFleet"></div>
+      </section>
+
+      <!-- ======== MINING ======== -->
+      <section id="view-mining" class="view hidden">
+        <header class="view-head">
+          <div>
+            <h1>MINING</h1>
+            <p class="sub" data-i18n="mining.sub">POOL &amp; WALLET EINTRAGEN &mdash; MINER STARTEN</p>
+          </div>
+          <div class="status-pill" id="mineStatePill"><span class="dot"></span> <span id="mineStateText" data-i18n="mining.offline">OFFLINE</span></div>
+        </header>
+
+        <!-- coin selector -->
+        <div class="coin-row" id="coinRow">
+          <button class="coin active" data-coin="FLUX"><b>FLUX</b><small><span data-i18n="cf.flux">GPU &middot; AUTOLYKOS2</span></small></button>
+          <button class="coin" data-coin="XMR"><b>XMR</b><small><span data-i18n="cf.xmr">CPU/GPU</span></small></button>
+          <button class="coin" data-coin="KAS"><b>KASPA</b><small><span data-i18n="cf.kas">GPU</span></small></button>
+          <button class="coin" data-coin="ERG"><b>ERGO</b><small><span data-i18n="cf.erg">GPU</span></small></button>
+          <button class="coin" data-coin="ZEPH"><b>ZEPHYR</b><small><span data-i18n="cf.zeph">GPU/CPU</span></small></button>
+          <button class="coin" data-coin="ALPH"><b>ALEPHIUM</b><small><span data-i18n="cf.alph">GPU</span></small></button>
+          <button class="coin" data-coin="BTC"><b>BTC</b><small><span data-i18n="cf.btc">SHA-256</span></small></button>
+          <button class="coin" data-coin="CUSTOM"><b>CUSTOM</b><small><span data-i18n="cf.custom">EIGENER MINER</span></small></button>
+        </div>
+
+        <div class="mine-grid">
+          <div class="card cfg-card" id="cfgCard">
+            <div class="card-head"><span>04</span> <span data-i18n="cfg.title">KONFIGURATION</span></div>
+
+            <div class="field">
+              <label data-i18n="cfg.pool">POOL (STRATUM)</label>
+              <input type="text" id="fPool" data-i18n="cfg.poolPh" spellcheck="false"/>
+              <div class="pool-tools"><button class="btn-mini" id="btnTestPool" data-i18n="cfg.testPool">VERBINDUNG TESTEN</button><span id="poolTestStatus" data-i18n="cfg.poolReady">BEREIT</span></div>
+            </div>
+
+            <div class="field">
+              <label data-i18n="cfg.failover">FAILOVER-POOLS (1 PRO ZEILE)</label>
+              <textarea id="fPools" data-i18n="cfg.failoverPh" spellcheck="false"></textarea>
+            </div>
+
+            <div class="field">
+              <label data-i18n="cfg.wallet">WALLET-ADRESSE</label>
+              <input type="text" id="fWallet" data-i18n="cfg.walletPh" spellcheck="false" autocomplete="off"/>
+              <p class="wallet-hint" id="walletHint"></p>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label data-i18n="cfg.worker">WORKER-NAME</label>
+                <input type="text" id="fWorker" placeholder="rig1" spellcheck="false"/>
+              </div>
+              <div class="field">
+                <label data-i18n="cfg.gpuSelect">AKTIVE GPUS</label>
+                <div class="gpu-select-grid" id="gpuSelectGrid"></div>
+              </div>
+            </div>
+
+
+
+
+            <div class="field">
+              <label data-i18n="cfg.extra">EXTRA-ARGUMENTE</label>
+              <input type="text" id="fExtra" data-i18n="cfg.extraPh" spellcheck="false"/>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="field">
+              <label data-i18n="cfg.miner">MINER</label>
+              <div class="mtype-row">
+                <button class="mtype active" id="mtypeBuiltin" data-mt="builtin"><span data-i18n="cfg.builtin">BUILT-IN&nbsp;(CPU&nbsp;SHA-256)</span></button>
+                <button class="mtype" id="mtypeExternal" data-mt="external"><span data-i18n="cfg.external">EXTERNER&nbsp;(GPU)</span></button>
+              </div>
+              <div class="mt-hint" id="mtHint"></div>
+              <div class="picker-row hidden" id="extRow">
+                <input type="text" id="fMiner" data-i18n="cfg.minerPh" readonly/>
+                <button class="btn-ghost" id="btnBrowse" data-i18n="cfg.browse">BROWSE</button>
+              </div>
+              <div class="dl-row hidden" id="dlRow">
+                <button class="btn-mini" id="btnDl"><span data-i18n="cfg.dlxmr">&#8595; XMRig herunterladen (XMR)</span></button>
+                <button class="btn-mini hidden" id="btnDlGpu"><span data-i18n="cfg.dllol">&#8595; lolMiner herunterladen (GPU)</span></button>
+              </div>
+            </div>
+
+            <div class="mine-actions">
+              <button class="btn-start" id="btnMine"><span data-i18n="cfg.start">&#9654; MINE STARTEN</span></button>
+              <button class="btn-stop" id="btnStopMine" data-i18n="cfg.stop" disabled>STOP</button>
+            </div>
+          </div>
+
+          <!-- live stats -->
+          <div class="card live-card" id="liveCard">
+            <div class="card-head"><span>05</span> <span data-i18n="live.title">LIVE-STATS</span></div>
+            <div class="hash-big">
+              <div class="m-label"><span data-i18n="live.hash">HASHRATE</span></div>
+              <div class="hash-value"><span id="hashRate">0.00</span> <small id="hashUnit">H/s</small></div>
+              <div class="bar"><div class="bar-fill" id="hashBar" style="width:0%"></div></div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="hrChart" width="520" height="110"></canvas>
+              <div class="chart-label" id="hrChartNote"></div>
+            </div>
+            <div class="live-grid">
+              <div class="stat"><div class="m-label"><span data-i18n="live.power">LEISTUNG</span></div><div class="stat-v" id="livePower">-- W</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.temp">TEMP</span></div><div class="stat-v" id="liveTemp">-- &deg;C</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.gpulast">GPU-LAST</span></div><div class="stat-v" id="liveUtil">-- %</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.uptime">UPTIME</span></div><div class="stat-v" id="liveUptime">--</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.accepted">ACCEPTED</span></div><div class="stat-v ok" id="accepted">0</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.rejected">REJECTED</span></div><div class="stat-v bad" id="rejected">0</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.eff">EFFIZIENZ</span></div><div class="stat-v" id="liveEff">-- H/W</div></div>
+              <div class="stat"><div class="m-label"><span data-i18n="live.pool">POOL</span></div><div class="stat-v pool-name" id="livePool">--</div></div>
+            </div>
+            <div class="profit-box" id="profitBox">
+              <div class="m-label"><span data-i18n="profit.title">PROFIT-SCHÄTZUNG</span></div>
+              <div class="profit-grid">
+                <div class="p-stat"><small data-i18n="profit.gross">EINNAHMEN</small><b id="profitGross">--</b></div>
+                <div class="p-stat"><small data-i18n="profit.cost">STROM</small><b id="profitCost">--</b></div>
+                <div class="p-stat net"><small data-i18n="profit.net">NETTO</small><b id="profitNet">--</b></div>
+              </div>
+              <div class="profit-rate">
+                <span data-i18n="profit.kwh">€/kWh</span>
+                <input type="number" id="elecPrice" min="0" max="3" step="0.01" value="0.40"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- console -->
+        <div class="card console-card">
+          <div class="card-head"><span>06</span> <span data-i18n="console.title">MINER-CONSOLE</span> <button class="console-clear" id="btnClearConsole" data-i18n="console.clear">LEEREN</button></div>
+          <div class="console" id="console"></div>
+        </div>
+      </section>
+
+    <!-- ======== GELD ======== -->
+      <section id="view-geld" class="view hidden">
+        <header class="view-head">
+          <div>
+            <h1 data-i18n="nav.geld">GELD</h1>
+            <p class="sub" data-i18n="geld.sub">DEIN PORTFOLIO &mdash; COINS &amp; EUR-WERT</p>
+          </div>
+          <div class="price-update" id="priceUpdate">PREISE &mdash;</div>
+        </header>
+
+        <div class="card">
+          <div class="card-head"><span>03</span> <span data-i18n="geld.total">GESAMTWERT</span> <em class="safe-tag" id="priceStatus" data-i18n="geld.wait">WAITING&hellip;</em></div>
+          <div class="geld-total">
+            <div class="m-label"><span data-i18n="geld.value">PORTFOLIO-WERT (EUR)</span></div>
+            <div class="geld-big"><span id="geldTotal">0,00</span> <small>&euro;</small></div>
+            <div class="geld-note" id="geldNote" data-i18n="geld.noteEmpty">Bestände bitte einmal eintragen &mdash; Kurse kommen live von&nbsp;CoinGecko.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><span>04</span> <span data-i18n="geld.holdings">COIN-BEST&auml;NDE</span>
+            <button class="console-clear" id="btnRefreshPrices" data-i18n="geld.refresh">KURSE AKTUALISIEREN</button>
+          </div>
+          <div class="bal-head"><span data-i18n="geld.colCoin">COIN</span><span data-i18n="geld.colQty">MENGE</span><span data-i18n="geld.colPrice">PREIS&nbsp;(EUR)</span><span data-i18n="geld.colValue">WERT&nbsp;(EUR)</span></div>
+          <div class="bal-list" id="balList"></div>
+          <div class="bal-note" data-i18n="geld.balNote">Mengen direkt eintragen und mit TAB/ENTER best&auml;tigen. Kurse werden automatisch aktualisiert.</div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><span>05</span> <span data-i18n="geld.history">MINING-VERLAUF</span> <em class="safe-tag" data-i18n="geld.hsafe">SHARES &amp; ZEIT</em></div>
+          <div class="hist-live hidden" id="histLive"></div>
+          <div class="hist-totals" id="histTotals"></div>
+          <div class="hist-head"><span data-i18n="geld.colTime">ZEIT</span><span data-i18n="geld.colCoin2">COIN</span><span data-i18n="geld.colDur">DAUER</span><span data-i18n="geld.colShares">SHARES</span><span data-i18n="geld.colWork">ARBEIT</span></div>
+          <div class="hist-list" id="histList"></div>
+          <div class="bal-note" data-i18n="geld.histNote">Verlauf speichert jede Sitzung (FLUX, XMR, KAS &hellip;). Shares z&auml;hlt der Miner; die Auszahlung kommt vom Pool auf deine Wallet. Arbeit = Hashrate &times; Zeit.</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- ======== EINSTELLUNGEN ======== -->
+  <div class="overlay hidden" id="settingsOverlay">
+    <div class="settings-card">
+      <div class="card-head"><span data-i18n="settings.title">EINSTELLUNGEN</span><button class="set-close" id="btnCloseSettings">&times;</button></div>
+
+      <div class="set-group">
+        <div class="set-title" data-i18n="settings.lang">SPRACHE</div>
+        <div class="lang-row">
+          <button class="lang-btn active" id="langDe" data-lang="de" data-i18n="settings.langDe">DEUTSCH</button>
+          <button class="lang-btn" id="langEn" data-lang="en" data-i18n="settings.langEn">ENGLISH</button>
+        </div>
+      </div>
+
+      <div class="set-group">
+        <div class="set-title" data-i18n="saf.group">SCHUTZ &amp; AUTOMATIK</div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.wd">Miner-Watchdog</b><small data-i18n="saf.wdNote">Startet den Miner nach einem Absturz automatisch neu und wechselt bei Antwortausfall zum Failover-Pool.</small></div>
+          <label class="switch"><input type="checkbox" id="wdEnabled" checked/><span class="sw"></span></label>
+        </div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.guard">Thermal Guard</b><small data-i18n="saf.guardNote">Senkt bei <b id="guardMaxLbl">85 °C</b> automatisch das Power-Limit und stellt es bei &le;&nbsp;<b id="guardRestLbl">75 °C</b> wieder her.</small></div>
+          <label class="switch"><input type="checkbox" id="guardEnabled" checked/><span class="sw"></span></label>
+        </div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.guardMax">Auslösetemperatur</b><small data-i18n="saf.guardMaxNote">Je niedriger, desto früher greift der Schutz.</small></div>
+          <div class="set-num"><input type="number" id="guardMax" min="60" max="95" step="1" value="85"/><span>&deg;C</span></div>
+        </div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.guardRest">Wiederherstellen bei</b><small data-i18n="saf.guardRestNote">Unter diesem Wert wird das normale Limit zurückgesetzt.</small></div>
+          <div class="set-num"><input type="number" id="guardRest" min="55" max="90" step="1" value="75"/><span>&deg;C</span></div>
+        </div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.elec">Strompreis</b><small data-i18n="saf.elecNote">Entspricht ungefähr deinem &euro;/kWh-Tarif &mdash; Grundlage der Profit-Schätzung.</small></div>
+          <div class="set-num"><input type="number" id="elecPriceCfg" min="0" max="3" step="0.01" value="0.40"/><span>&euro;/kWh</span></div>
+        </div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.guardState">Thermal-Guard-Status</b><small data-i18n="saf.guardStateNote">Zeigt aktive Limitsenkungen pro GPU.</small></div>
+          <button class="tour-btn ghost" id="guardProbe" data-i18n="saf.probe">STATUS ABFRAGEN</button>
+        </div>
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="saf.webhook">Discord Webhook URL</b><small data-i18n="saf.webhookNote">Sendet Status-Updates an deinen Discord-Kanal.</small></div>
+          <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." spellcheck="false" class="set-input-full"/>
+        </div>
+      </div>
+
+      <div class="set-group">
+        <div class="set-title" data-i18n="don.group">SPENDE AN DIE ENTWICKLER</div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="don.act">Dev-Fee 5%</b><small data-i18n="don.actNote">Minet 5% der Zeit auf Admin-Wallets (FLUX + Monero). Standardm&auml;&szlig;ig aktiv.</small></div>
+          <label class="switch"><input type="checkbox" id="donEnabled" checked/><span class="sw"></span></label>
+        </div>
+      </div>
+
+      <div class="set-group">
+        <div class="set-title" data-i18n="dc.group">DISCORD RICH PRESENCE</div>
+
+        <div class="set-row">
+          <div class="set-txt"><b data-i18n="dc.act">Discord-Aktivität</b><small data-i18n="dc.actNote">Zeigt „Playing Blockmine“ / Mining mit Coin in deinem Discord-Profil.</small></div>
+          <label class="switch"><input type="checkbox" id="dcEnabled" checked/><span class="sw"></span></label>
+        </div>
+
+        <div class="set-row" id="dcRowHr">
+          <div class="set-txt"><b data-i18n="dc.hr">Hashrate anzeigen</b><small data-i18n="dc.hrNote">Blendet deine aktuelle Hashrate in der Discord-Aktivität mit ein.</small></div>
+          <label class="switch"><input type="checkbox" id="dcShowHr"/><span class="sw"></span></label>
+        </div>
+
+        <p class="set-note" data-i18n="dc.note">Client-ID <b>1548357421674659840</b> ist fest hinterlegt, inkl. Bilder <b>flux, xmr, ergo, kaspa, zephyr, alephium, bitcoin, custom</b>. Discord Desktop muss laufen, nicht nur der Browser. Wenn es auf <b>manchen Accounts</b> fehlt: Dort in Discord unter <b>Nutzereinstellungen &rarr; Aktivität &rarr; &bdquo;Zeige gerade laufende Spiele als Statusmeldung&ldquo;</b> einschalten — Account-Wechsel werden automatisch neu verbunden.</p>
+
+        <div class="dc-status" id="dcStatus">DISCORD &mdash; AUS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== UPDATE OVERLAY ======== -->
+  <div id="update" class="update-overlay hidden">
+    <div class="update-card">
+      <div class="card-head"><span data-i18n="upd.title">AKTUALISIERUNG VERF&Uuml;GBAR</span><button class="set-close" id="updateClose">&times;</button></div>
+      <div class="update-ver" id="updateVer"></div>
+      <div class="update-changelog" id="updateChangelog"></div>
+      <div class="update-status" data-i18n="upd.installNote"></div>
+      <div class="update-actions">
+        <button class="tour-btn ghost" id="updateLater" data-i18n="upd.later">SP&Auml;TER</button>
+        <button class="tour-btn primary" id="updateGo" data-i18n="upd.go">AKTUALISIEREN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== TUTORIAL / ONBOARDING ======== -->
+  <div id="tour" class="tour hidden">
+    <div class="tour-veil"></div>
+    <div class="tour-highlight" id="tourHighlight"></div>
+    <div class="tour-card" id="tourCard">
+      <div class="tour-progress"><div class="tour-progress-fill" id="tourProgress"></div></div>
+      <div class="tour-title" id="tourTitle"></div>
+      <div class="tour-text" id="tourText"></div>
+      <div class="tour-controls">
+        <button class="tour-btn ghost" id="tourBack" data-i18n="tour.back">ZUR&Uuml;CK</button>
+        <span class="tour-step" id="tourStep">1 / 6</span>
+        <button class="tour-btn primary" id="tourNext">WEITER</button>
+        <button class="tour-btn link" id="tourSkip" data-i18n="tour.skip">&Uuml;BERSPRINGEN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

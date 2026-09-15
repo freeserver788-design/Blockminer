@@ -1,0 +1,11 @@
+{
+  "name": "blockmine",
+  "version": "2.0.0",
+  "description": "Blockmine - Secure GPU mining dashboard. Power-limit only, never overclock.",
+  "main": "main.js",
+  "author": "Blockmine",
+  "license": "MIT",
+  "dependencies": {
+    "@xhayper/discord-rpc": "^1.3.4"
+  }
+}

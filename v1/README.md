@@ -1,4 +1,4 @@
-# Blockmine v3
+# Blockmine Sourcecode
 
 Blockmine v3 ist ein professionelles Electron-Dashboard für sicheres GPU- und CPU-Mining. Die Oberfläche ist auf schnelle Entscheidungen im laufenden Betrieb ausgelegt: Live-Telemetrie, Power-Limit, Miner-Steuerung, Watchdog, Thermal Guard, Failover-Pools, Profit-Schätzung und Mining-Verlauf arbeiten in einem ruhigen Operations-Layout zusammen.
 
@@ -17,6 +17,7 @@ Blockmine v3 ist ein professionelles Electron-Dashboard für sicheres GPU- und C
 Voraussetzungen: Node.js, npm und unter Windows für Power-Limits die passenden NVIDIA-Treiber bzw. Administrator-Rechte.
 
 ```bash
+cd v3
 npm install
 npm start
 ```
@@ -24,13 +25,20 @@ npm start
 Installer bauen:
 
 ```bash
+cd v3
 npm run dist       # Windows
 npm run dist:linux # Linux
 ```
 
-## Sourcecode-Versionen
+## Sourcecode-Branch
 
-Der Branch `Sourcecode` enthält die nachvollziehbaren Snapshots unter `source/version1.0`, `source/version2.0` und `source/version3.0`. Der aktuelle Arbeitsstand im Repository ist v3.
+Der Branch `Sourcecode` ist vollständig nach Version sortiert:
+
+- `v1/` — kompletter Sourcecode von v1
+- `v2/` — kompletter Sourcecode von v2
+- `v3/` — kompletter Sourcecode von v3
+
+In jedem Versionsordner liegen die vollständigen Projektordner wie `renderer/`, `lib/`, `miner/`, `build/` und `dcimage/`. Nichts liegt für die Versionsquellen lose im Branch-Root.
 
 ## Sicherheit
 

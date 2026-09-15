@@ -28,9 +28,9 @@ npm run dist       # Windows
 npm run dist:linux # Linux
 ```
 
-## Sourcecode-Versionen
+## Sourcecode-Branch
 
-Der Branch `Sourcecode` enthält die nachvollziehbaren Snapshots unter `source/version1.0`, `source/version2.0` und `source/version3.0`. Der aktuelle Arbeitsstand im Repository ist v3.
+Der Branch `Sourcecode` enthält ausschließlich den vollständigen aktuellen v3-Stand. Der Code ist direkt in den Projektordnern `renderer/`, `lib/`, `miner/`, `build/` und `dcimage/` organisiert — keine alten v1/v2-Duplikate.
 
 ## Sicherheit
 
